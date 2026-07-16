@@ -1,0 +1,443 @@
+{
+  "boards": [
+    {
+      "_id": "6dleiuimt",
+      "name": "elden ring bosses",
+      "cards": [
+        {
+          "id": "5jm6romj6",
+          "title": "Complete Elden Ring Boss Names List",
+          "content": "",
+          "code": "",
+          "tags": [],
+          "color": "slate",
+          "type": "note",
+          "cardMode": "sketch",
+          "width": 422.43695972068724,
+          "height": 263.17035178447287,
+          "x": -369.529049056797,
+          "y": 24.303514454011648
+        },
+        {
+          "id": "0jj4ex1nu",
+          "title": "Main Story Bosses",
+          "content": "Margit, the Fell Omen\nGodrick the Grafted\nRed Wolf of Radagon\nRennala, Queen of the Full Moon\nStarscourge Radahn\nGodfrey, First Elden Lord (Golden Shade)\nMorgott, the Omen King\nFire Giant\nGodskin Duo\nMaliketh, the Black Blade\nSir Gideon Ofnir, the All-Knowing\nGodfrey, First Elden Lord\nRadagon of the Golden Order\nElden Beast\n",
+          "code": "",
+          "tags": [],
+          "color": "indigo",
+          "type": "note",
+          "cardMode": "code",
+          "width": 327.1046683464706,
+          "height": 316.7622949503092,
+          "x": 117.9815426171927,
+          "y": -24.969507880015783
+        },
+        {
+          "id": "187nx7phk",
+          "title": "Shardbearers & Major Bosses",
+          "content": "Rykard, Lord of Blasphemy\nMalenia, Blade of Miquella\nMohg, Lord of Blood\nAstel, Naturalborn of the Void\nPlacidusax, the Dragonlord\nFortissax, the Lichdragon\nHoarah Loux, Warrior\n",
+          "code": "",
+          "tags": [],
+          "color": "cyan",
+          "type": "note",
+          "cardMode": "notes",
+          "width": 302.90393302604554,
+          "height": 324.0787963262516,
+          "x": 568.8212199495246,
+          "y": -29.658704716536107
+        },
+        {
+          "id": "t9dzmqzle",
+          "title": "Field Bosses",
+          "content": "Tree Sentinel\nTibia Mariner (Summonwater Village)\nTibia Mariner (Wyndham Ruins)\nTibia Mariner (East Liurnia)\nErdtree Avatar (Minor Erdtree Caelid)\nErdtree Avatar (Minor Erdtree Consecrated Snowfield)\nErdtree Avatar (Minor Erdtree Mountaintops East)\nErdtree Avatar (Minor Erdtree Liurnia Southwest)\nErdtree Avatar (Minor Erdtree Limgrave)\nCrucible Knight (Limgrave)\nCrucible Knight (Caelid)\nCrucible Knight Ordovis\nCrucible Knight Siluria\nDeathbird (Limgrave)\nDeathbird (Caelid)\nDeathbird (Mountaintops)\nDeath Rite Bird (Caelid)\nDeath Rite Bird (Consecrated Snowfield)\nDeath Rite Bird (Mountaintops)\nFlying Dragon Agheel\nElder Dragon Greyoll\nGlintstone Dragon Adula\nGlintstone Dragon Smarag\nBorealis the Freezing Fog\nEkzykes\nAncient Dragon Lansseax\nMagma Wyrm (Gael Tunnel)\nMagma Wyrm Makar\nGreat Wyrm Theodorix\nBell Bearing Hunter (Limgrave)\nBell Bearing Hunter (Caelid)\nBell Bearing Hunter (Leyndell)\nDraconic Tree Sentinel (Limgrave)\nDraconic Tree Sentinel (Capital Outskirts)\nNight's Cavalry (Limgrave)\nNight's Cavalry (Weeping Peninsula)\nNight's Cavalry (Caelid)\nNight's Cavalry (Dragonbarrow)\nNight's Cavalry (East Liurnia)\nNight's Cavalry (Liurnia North)\nNight's Cavalry (Altus Plateau)\nNight's Cavalry (Consecrated Snowfield)\nNight's Cavalry (Forbidden Lands)\nBloodhound Knight Darriwil\nForlorn Hound Evergaol\nCrucible Knight (Stormhill Evergaol)\nAdan, Thief of Fire\nBattlemage Hugues\nBols, Carian Knight\nAncient Hero of Zamor (Evergaol)\nAncient Hero of Zamor (Giant-Conquering Hero's Grave)\n",
+          "code": "",
+          "tags": [],
+          "color": "emerald",
+          "type": "note",
+          "cardMode": "notes",
+          "width": 305.1551642186432,
+          "height": 387.11326971898666,
+          "x": 997.2050350557358,
+          "y": 189.9241566036747
+        },
+        {
+          "id": "fcmg172fz",
+          "title": "Dungeon Bosses",
+          "content": "Soldier of Godrick\nBeastman of Farum Azula (Groveside Cave)\nStonedigger Troll\nMad Pumpkin Head (Waypoint Ruins)\nMad Pumpkin Head (Caelem Ruins)\nPatches\nBloodhound Knight\nCleanrot Knight\nCrucible Knight & Misbegotten Warrior\nLeonine Misbegotten\nAncestor Spirit\nRegal Ancestor Spirit\nRoyal Revenant (Kingsrealm Ruins)\nRoyal Revenant (Various Locations)\nUlcerated Tree Spirit (Fringefolk Hero's Grave)\nUlcerated Tree Spirit (Mt. Gelmir)\nUlcerated Tree Spirit (Caelid Catacombs)\nUlcerated Tree Spirit (War-Dead Catacombs)\nUlcerated Tree Spirit (Giants' Mountaintop Catacombs)\nUlcerated Tree Spirit (Haligtree Roots)\nCemetery Shade (Tombsward Catacombs)\nCemetery Shade (Caelid Catacombs)\nCemetery Shade (Black Knife Catacombs)\nErdtree Burial Watchdog (Stormfoot Catacombs)\nErdtree Burial Watchdog (Impaler's Catacombs)\nErdtree Burial Watchdog (Cliffbottom Catacombs)\nErdtree Burial Watchdog (Wyndham Catacombs)\nErdtree Burial Watchdog (Minor Erdtree Catacombs)\nErdtree Burial Watchdog (Giant-Conquering Hero's Grave)\nMiranda the Blighted Bloom\nOmenkiller\nOmenkiller & Miranda Flower\nSanguine Noble (Writheblood Ruins)\nSanguine Noble (Rose Church)\nGrave Warden Duelist (Murkwater Catacombs)\nGrave Warden Duelist (Auriza Hero's Grave)\nGrave Warden Duelist (Caelid Catacombs)\nScaly Misbegotten\nMisbegotten Crusader\nKindred of Rot\nKindred of Rot (Seethewater Cave)\nGlintstone Dragon Adula (Ranni's Rise)\nCrystalian (Raya Lucaria Crystal Tunnel)\nCrystalian (Academy Crystal Cave)\nCrystalian Trio\nRed Wolf of the Champion\nSpirit-Caller Snail (Road's End Catacombs)\nSpirit-Caller Snail (Spiritcaller's Cave)\nRoyal Knight Loretta\nLoretta, Knight of the Haligtree\nAlabaster Lord (Raya Lucaria Academy)\nOnyx Lord (Sealed Tunnel)\nFalling Star Beast (Sellia Crystal Tunnel)\nFalling Star Beast (Mt. Gelmir)\nFull-Grown Fallingstar Beast\nPreceptor Miriam\nGodskin Apostle (Caelid Tower)\nGodskin Apostle (Windmill Village)\nGodskin Noble (Volcano Manor)\nGodskin Noble (Temple of Eiglay)\nBlack Blade Kindred (Bestial Sanctum)\nBlack Blade Kindred (Forbidden Lands)\nValiant Gargoyle\nValiant Gargoyle Duo\nCommander Niall\nCommander O'Neil\nElemer of the Briar\nJuno Hoslow, Knight of Blood\nNecromancer Garris\nEsgar, Priest of Blood\nMohg, the Omen\nAbductor Virgins\nAncient Dragon Lansseax (Altus Plateau)\nWormface\nMagma Wyrm (Fort Laiedd)\nFallingstar Beast (Caelid)\nPutrid Avatar\nPutrid Tree Spirit\nBlack Knife Assassin (Deathtouched Catacombs)\nBlack Knife Assassin (Black Knife Catacombs)\nBlack Knife Assassin (Sage's Cave)\nBlack Knife Assassin (Ordina)\nCrucible Knight Duo\nMisbegotten Warrior & Crucible Knight\nGodefroy the Grafted\nFia's Champions\nLichdragon Fortissax\nVyke, Knight of the Roundtable\nAlecto, Black Knife Ringleader\nBloodhound Knight Floh\nRoundtable Knight Vyke (Mountaintops)\n",
+          "code": "",
+          "tags": [],
+          "color": "amber",
+          "type": "note",
+          "cardMode": "notes",
+          "width": 306.8435876130915,
+          "height": 400.0578490764234,
+          "x": 1383.1564123869086,
+          "y": 150
+        },
+        {
+          "id": "y6cgyru64",
+          "title": "Shadow of the Erdtree DLC Bosses",
+          "content": "Divine Beast Dancing Lion\nRellana, Twin Moon Knight\nMessmer the Impaler\nPutrescent Knight\nRomina, Saint of the Bud\nBayle the Dread\nMidra, Lord of Frenzied Flame\nScadutree Avatar\nCommander Gaius\nMetyr, Mother of Fingers\nPromised Consort Radahn\nAncient Dragon-Man\nCurseblade Labirith\nDeath Knight\nDemi-Human Swordmaster Onze\nDryleaf Dane\nFire Knight Queelign\nFurnace Golem\nGhost of Igon\nGolden Hippopotamus\nGolem Smith\nJori, Elder Inquisitor\nLamenter\nLogur the Beast Claw\nMagma Wyrm (Shadow Realm)\nRakshasa\nRed Bear\nRugalea the Great Red Bear\nScadutree Avatar (Alternate)\nSpider Scorpion\nStone-Sheathed Scarab\nTaylew the Golem Smith\nTree Sentinel (Shadow Realm)\nTwin Moon Knight\nUlcerated Tree Spirit (Shadow Realm)\nVerdigris Knight\nChief Bloodfiend\nCount Ymir, High Priest\nNeedle Knight Leda\nThiollier\nAnsbach\nMoore\nFreyja\nHornsent Warrior\n",
+          "code": "",
+          "tags": [],
+          "color": "emerald",
+          "type": "note",
+          "cardMode": "notes",
+          "width": 325.0815840216043,
+          "height": 421.70098965858904,
+          "x": 1724.9184159783958,
+          "y": 150,
+          "completed": true
+        },
+        {
+          "id": "si4vvqhcu",
+          "title": "Mini-Bosses & Invaders",
+          "content": "Festering Fingerprint Vyke\nBloody Finger Nerijus\nRecusant Henricus\nGreat Horned Tragoth\nInquisitor Ghiza\nMillicent\nYura, Hunter of Bloody Fingers\nOkina\nSellen's Puppet\nWhite Mask Varre\nAnastasia, Tarnished-Eater\nMagnus the Beast Claw\nBernahl\nDung Eater\nEdgar the Revenger\nEleonora, Violet Bloody Finger\nFlame Guardian\nFestering Fingerprint Vyke (Liurnia)\nMoongrum, Carian Knight\nPreceptor Miriam (Carian Study Hall)\nRileigh the Idle\nRoundtable Knight Vyke (Lord Contender's Evergaol)\nTanith's Knight\nWhite Mask Varré\n",
+          "code": "",
+          "tags": [],
+          "color": "slate",
+          "type": "note",
+          "cardMode": "notes",
+          "width": 305.5398018789949,
+          "height": 417.586930260145,
+          "x": 2104.460198121005,
+          "y": 150
+        },
+        {
+          "id": "mtfkmj50m",
+          "title": "Additional Bosses & Variants",
+          "content": "Grafted Scion (Tutorial)\nGrafted Scion (Four Belfries)\nSoldier of Godrick (Tutorial Cave)\nCrucible Knight (Redmane Castle)\nLion Guardian\nWatchdog of the Old Lords\nGreat Grave Warden\nGlintstone Dragon (Various)\nAncient Dragon (Various)\nMagma Wyrm (Various Locations)\nFlying Dragon (Various)\nRunebear\nGiant Dog\nGiant Crab\nGiant Lobster\nGrafted Spider",
+          "code": "",
+          "tags": [],
+          "color": "indigo",
+          "type": "note",
+          "cardMode": "notes",
+          "width": 250,
+          "height": 180,
+          "x": 2520,
+          "y": 150
+        }
+      ],
+      "connections": [
+        {
+          "id": "conn-auto-0-lci5",
+          "fromCardId": "5jm6romj6",
+          "fromSide": "right",
+          "toCardId": "0jj4ex1nu",
+          "toSide": "left",
+          "label": ""
+        },
+        {
+          "id": "conn-auto-1-du8o",
+          "fromCardId": "0jj4ex1nu",
+          "fromSide": "right",
+          "toCardId": "187nx7phk",
+          "toSide": "left",
+          "label": ""
+        },
+        {
+          "id": "conn-auto-2-gm4a",
+          "fromCardId": "187nx7phk",
+          "fromSide": "right",
+          "toCardId": "t9dzmqzle",
+          "toSide": "left",
+          "label": ""
+        },
+        {
+          "id": "conn-auto-3-3gl1",
+          "fromCardId": "t9dzmqzle",
+          "fromSide": "right",
+          "toCardId": "fcmg172fz",
+          "toSide": "left",
+          "label": ""
+        },
+        {
+          "id": "conn-auto-4-ep2b",
+          "fromCardId": "fcmg172fz",
+          "fromSide": "right",
+          "toCardId": "y6cgyru64",
+          "toSide": "left",
+          "label": ""
+        },
+        {
+          "id": "conn-auto-5-2pif",
+          "fromCardId": "y6cgyru64",
+          "fromSide": "right",
+          "toCardId": "si4vvqhcu",
+          "toSide": "left",
+          "label": ""
+        },
+        {
+          "id": "conn-auto-6-6662",
+          "fromCardId": "si4vvqhcu",
+          "fromSide": "right",
+          "toCardId": "mtfkmj50m",
+          "toSide": "left",
+          "label": ""
+        }
+      ],
+      "drawings": [
+        {
+          "tool": "pen",
+          "color": "#ffffff",
+          "thickness": 5,
+          "points": [
+            {
+              "x": 330,
+              "y": 397
+            },
+            {
+              "x": 331,
+              "y": 397
+            },
+            {
+              "x": 339,
+              "y": 400
+            },
+            {
+              "x": 361,
+              "y": 413
+            },
+            {
+              "x": 427,
+              "y": 428
+            },
+            {
+              "x": 465,
+              "y": 429
+            },
+            {
+              "x": 480,
+              "y": 429
+            },
+            {
+              "x": 505,
+              "y": 429
+            },
+            {
+              "x": 513,
+              "y": 429
+            },
+            {
+              "x": 528,
+              "y": 429
+            },
+            {
+              "x": 532,
+              "y": 429
+            },
+            {
+              "x": 537,
+              "y": 429
+            },
+            {
+              "x": 539,
+              "y": 429
+            },
+            {
+              "x": 540,
+              "y": 429
+            },
+            {
+              "x": 541,
+              "y": 429
+            },
+            {
+              "x": 542,
+              "y": 429
+            },
+            {
+              "x": 542,
+              "y": 429
+            },
+            {
+              "x": 542,
+              "y": 428
+            },
+            {
+              "x": 544,
+              "y": 426
+            },
+            {
+              "x": 544,
+              "y": 425
+            },
+            {
+              "x": 545,
+              "y": 423
+            },
+            {
+              "x": 547,
+              "y": 421
+            },
+            {
+              "x": 554,
+              "y": 415
+            },
+            {
+              "x": 555,
+              "y": 412
+            },
+            {
+              "x": 556,
+              "y": 409
+            },
+            {
+              "x": 557,
+              "y": 407
+            },
+            {
+              "x": 559,
+              "y": 405
+            }
+          ]
+        },
+        {
+          "tool": "pen",
+          "color": "#ffffff",
+          "thickness": 5,
+          "points": [
+            {
+              "x": 330,
+              "y": 397
+            },
+            {
+              "x": 331,
+              "y": 397
+            },
+            {
+              "x": 339,
+              "y": 400
+            },
+            {
+              "x": 361,
+              "y": 413
+            },
+            {
+              "x": 427,
+              "y": 428
+            },
+            {
+              "x": 465,
+              "y": 429
+            },
+            {
+              "x": 480,
+              "y": 429
+            },
+            {
+              "x": 505,
+              "y": 429
+            },
+            {
+              "x": 513,
+              "y": 429
+            },
+            {
+              "x": 528,
+              "y": 429
+            },
+            {
+              "x": 532,
+              "y": 429
+            },
+            {
+              "x": 537,
+              "y": 429
+            },
+            {
+              "x": 539,
+              "y": 429
+            },
+            {
+              "x": 540,
+              "y": 429
+            },
+            {
+              "x": 541,
+              "y": 429
+            },
+            {
+              "x": 542,
+              "y": 429
+            },
+            {
+              "x": 542,
+              "y": 429
+            },
+            {
+              "x": 542,
+              "y": 428
+            },
+            {
+              "x": 544,
+              "y": 426
+            },
+            {
+              "x": 544,
+              "y": 425
+            },
+            {
+              "x": 545,
+              "y": 423
+            },
+            {
+              "x": 547,
+              "y": 421
+            },
+            {
+              "x": 554,
+              "y": 415
+            },
+            {
+              "x": 555,
+              "y": 412
+            },
+            {
+              "x": 556,
+              "y": 409
+            },
+            {
+              "x": 557,
+              "y": 407
+            },
+            {
+              "x": 559,
+              "y": 405
+            }
+          ]
+        },
+        {
+          "tool": "pen",
+          "color": "#ffffff",
+          "thickness": 5,
+          "points": [
+            {
+              "x": 602.0564746506913,
+              "y": 712.2528901539096
+            }
+          ]
+        },
+        {
+          "tool": "pen",
+          "color": "#ffffff",
+          "thickness": 5,
+          "points": [
+            {
+              "x": 602.0564746506913,
+              "y": 712.2528901539096
+            }
+          ]
+        }
+      ],
+      "pan": {
+        "x": 229.21738654875548,
+        "y": 109.0118356225322
+      },
+      "zoom": 1.2922615844634617,
+      "createdAt": "2026-07-10T18:16:19.596Z",
+      "updatedAt": "2026-07-10T18:20:00.163Z"
+    }
+  ]
+}
+}
