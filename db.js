@@ -17,6 +17,16 @@ const AttachmentSchema = new mongoose.Schema({
   dataUrl: String
 });
 
+const CardFeaturesSchema = new mongoose.Schema({
+  notes: { type: Boolean, default: true },
+  sketch: { type: Boolean, default: true },
+  attachments: { type: Boolean, default: true },
+  tags: { type: Boolean, default: true },
+  colorPalette: { type: Boolean, default: true },
+  completedStatus: { type: Boolean, default: true },
+  connectPorts: { type: Boolean, default: true }
+}, { _id: false });
+
 const CardSchema = new mongoose.Schema({
   id: String,
   x: Number,
@@ -35,11 +45,13 @@ const CardSchema = new mongoose.Schema({
   cardMode: { type: String, default: 'notes' }, // 'notes' | 'code' | 'sketch'
   attachments: { type: [AttachmentSchema], default: [] },
   completed: { type: Boolean, default: false },
+  isStartNode: { type: Boolean, default: false },
   notesFontSize: { type: String, default: 'medium' },
   notesTextColor: { type: String, default: 'default' },
   notesFontFamily: { type: String, default: 'sans' },
   notesFontWeight: { type: String, default: 'normal' },
-  notesFontStyle: { type: String, default: 'normal' }
+  notesFontStyle: { type: String, default: 'normal' },
+  features: { type: CardFeaturesSchema, default: () => ({ notes: true, sketch: true, attachments: true, tags: true, colorPalette: true, completedStatus: true, connectPorts: true }) }
 });
 
 const ConnectionSchema = new mongoose.Schema({
