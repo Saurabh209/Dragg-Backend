@@ -46,6 +46,10 @@ const CardSchema = new mongoose.Schema({
   attachments: { type: [AttachmentSchema], default: [] },
   completed: { type: Boolean, default: false },
   isStartNode: { type: Boolean, default: false },
+  badge: {
+    text: { type: String, default: '' },
+    color: { type: String, default: '' }
+  },
   notesFontSize: { type: String, default: 'medium' },
   notesTextColor: { type: String, default: 'default' },
   notesFontFamily: { type: String, default: 'sans' },
@@ -232,6 +236,113 @@ export const updateBoard = async (id, data) => {
       language: data.language !== undefined ? data.language : db.boards[index].language,
       updatedAt: new Date().toISOString()
     };
+    await writeLocalDB(db);
+    return db.boards[index];
+  }
+};
+
+export const patchBoard = async (id, delta) => {
+  if (!useLocal) {
+    const existingBoard = await BoardModel.findById(id);
+    if (!existingBoard) return null;
+
+    const currentCards = existingBoard.cards || [];
+    const cardMap = new Map();
+    currentCards.forEach(c => {
+      const obj = c.toObject ? c.toObject() : c;
+      if (obj && obj.id) cardMap.set(obj.id, obj);
+    });
+
+    if (Array.isArray(delta.deletedCardIds)) {
+      delta.deletedCardIds.forEach(cardId => cardMap.delete(cardId));
+    }
+
+    if (Array.isArray(delta.updatedCards)) {
+      delta.updatedCards.forEach(card => {
+        if (card && card.id) {
+          const existing = cardMap.get(card.id) || {};
+          cardMap.set(card.id, { ...existing, ...card });
+        }
+      });
+    }
+
+    const updateFields = {};
+    if (delta.updatedCards !== undefined || delta.deletedCardIds !== undefined) {
+      updateFields.cards = Array.from(cardMap.values());
+    } else if (delta.cards !== undefined) {
+      updateFields.cards = delta.cards;
+    }
+
+    if (delta.updatedConnections !== undefined) {
+      updateFields.connections = delta.updatedConnections;
+    } else if (delta.connections !== undefined) {
+      updateFields.connections = delta.connections;
+    }
+
+    if (delta.updatedDrawings !== undefined) {
+      updateFields.drawings = delta.updatedDrawings;
+    } else if (delta.drawings !== undefined) {
+      updateFields.drawings = delta.drawings;
+    }
+
+    if (delta.name !== undefined) updateFields.name = delta.name;
+    if (delta.pan !== undefined) updateFields.pan = delta.pan;
+    if (delta.zoom !== undefined) updateFields.zoom = delta.zoom;
+    if (delta.code !== undefined) updateFields.code = delta.code;
+    if (delta.language !== undefined) updateFields.language = delta.language;
+
+    return await BoardModel.findByIdAndUpdate(
+      id,
+      { $set: updateFields },
+      { new: true }
+    );
+  } else {
+    const db = await readLocalDB();
+    const index = db.boards.findIndex(b => b._id === id);
+    if (index === -1) return null;
+
+    const board = db.boards[index];
+    const cardMap = new Map();
+    (board.cards || []).forEach(c => {
+      if (c && c.id) cardMap.set(c.id, { ...c });
+    });
+
+    if (Array.isArray(delta.deletedCardIds)) {
+      delta.deletedCardIds.forEach(cardId => cardMap.delete(cardId));
+    }
+
+    if (Array.isArray(delta.updatedCards)) {
+      delta.updatedCards.forEach(card => {
+        if (card && card.id) {
+          const existing = cardMap.get(card.id) || {};
+          cardMap.set(card.id, { ...existing, ...card });
+        }
+      });
+    }
+
+    let finalCards = board.cards;
+    if (delta.updatedCards !== undefined || delta.deletedCardIds !== undefined) {
+      finalCards = Array.from(cardMap.values());
+    } else if (delta.cards !== undefined) {
+      finalCards = delta.cards;
+    }
+
+    let finalConnections = delta.updatedConnections !== undefined ? delta.updatedConnections : (delta.connections !== undefined ? delta.connections : board.connections);
+    let finalDrawings = delta.updatedDrawings !== undefined ? delta.updatedDrawings : (delta.drawings !== undefined ? delta.drawings : board.drawings);
+
+    db.boards[index] = {
+      ...board,
+      name: delta.name !== undefined ? delta.name : board.name,
+      cards: finalCards,
+      connections: finalConnections,
+      drawings: finalDrawings,
+      pan: delta.pan !== undefined ? delta.pan : board.pan,
+      zoom: delta.zoom !== undefined ? delta.zoom : board.zoom,
+      code: delta.code !== undefined ? delta.code : board.code,
+      language: delta.language !== undefined ? delta.language : board.language,
+      updatedAt: new Date().toISOString()
+    };
+
     await writeLocalDB(db);
     return db.boards[index];
   }

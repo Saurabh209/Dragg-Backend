@@ -1,17 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { connectDB, getBoards, getBoardById, createBoard, updateBoard, deleteBoard, verifyPassword } from './db.js';
+import { connectDB, getBoards, getBoardById, createBoard, updateBoard, patchBoard, deleteBoard, verifyPassword } from './db.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/canvas-board';
+const MONGO_URI = process.env.MONGO_URI ;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Routes
 // Get all boards (metadata list)
@@ -87,7 +88,7 @@ app.post('/api/boards', async (req, res) => {
   }
 });
 
-// Update board state (cards, connections, pan, zoom, name)
+// Update board state full (cards, connections, pan, zoom, name)
 app.put('/api/boards/:id', async (req, res) => {
   try {
     const board = await getBoardById(req.params.id);
@@ -111,6 +112,33 @@ app.put('/api/boards/:id', async (req, res) => {
   } catch (error) {
     console.error('Error updating board:', error);
     res.status(500).json({ error: 'Failed to update board' });
+  }
+});
+
+// Partial (Delta) update board state
+app.patch('/api/boards/:id', async (req, res) => {
+  try {
+    const board = await getBoardById(req.params.id);
+    if (!board) {
+      return res.status(404).json({ error: 'Board not found' });
+    }
+
+    if (board.protectionMode === 'full' || board.protectionMode === 'partial') {
+      const clientPassword = req.headers['x-board-password'];
+      if (!verifyPassword(clientPassword, board.password)) {
+        return res.status(401).json({ error: 'Password required to modify board' });
+      }
+    }
+
+    const updatedBoard = await patchBoard(req.params.id, req.body);
+    
+    const boardData = updatedBoard.toObject ? updatedBoard.toObject() : { ...updatedBoard };
+    delete boardData.password;
+
+    res.json(boardData);
+  } catch (error) {
+    console.error('Error patching board:', error);
+    res.status(500).json({ error: 'Failed to patch board' });
   }
 });
 
