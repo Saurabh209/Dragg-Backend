@@ -46,6 +46,9 @@ const CardSchema = new mongoose.Schema({
   attachments: { type: [AttachmentSchema], default: [] },
   completed: { type: Boolean, default: false },
   isStartNode: { type: Boolean, default: false },
+  showInSearch: { type: Boolean, default: false },
+  groupId: { type: String, default: '' },
+  isLocked: { type: Boolean, default: false },
   badge: {
     text: { type: String, default: '' },
     color: { type: String, default: '' }
@@ -92,7 +95,8 @@ const BoardSchema = new mongoose.Schema({
   },
   zoom: { type: Number, default: 1 },
   code: { type: String, default: '' },
-  language: { type: String, default: 'javascript' }
+  language: { type: String, default: 'javascript' },
+  highlightedPathStartCardId: { type: String, default: '' }
 }, { timestamps: true });
 
 const BoardModel = mongoose.model('Board', BoardSchema);
@@ -214,6 +218,7 @@ export const updateBoard = async (id, data) => {
     if (data.zoom !== undefined) updateFields.zoom = data.zoom;
     if (data.code !== undefined) updateFields.code = data.code;
     if (data.language !== undefined) updateFields.language = data.language;
+    if (data.highlightedPathStartCardId !== undefined) updateFields.highlightedPathStartCardId = data.highlightedPathStartCardId;
 
     return await BoardModel.findByIdAndUpdate(
       id,
@@ -234,6 +239,7 @@ export const updateBoard = async (id, data) => {
       zoom: data.zoom !== undefined ? data.zoom : db.boards[index].zoom,
       code: data.code !== undefined ? data.code : db.boards[index].code,
       language: data.language !== undefined ? data.language : db.boards[index].language,
+      highlightedPathStartCardId: data.highlightedPathStartCardId !== undefined ? data.highlightedPathStartCardId : db.boards[index].highlightedPathStartCardId,
       updatedAt: new Date().toISOString()
     };
     await writeLocalDB(db);
@@ -290,6 +296,7 @@ export const patchBoard = async (id, delta) => {
     if (delta.zoom !== undefined) updateFields.zoom = delta.zoom;
     if (delta.code !== undefined) updateFields.code = delta.code;
     if (delta.language !== undefined) updateFields.language = delta.language;
+    if (delta.highlightedPathStartCardId !== undefined) updateFields.highlightedPathStartCardId = delta.highlightedPathStartCardId;
 
     return await BoardModel.findByIdAndUpdate(
       id,
@@ -340,6 +347,7 @@ export const patchBoard = async (id, delta) => {
       zoom: delta.zoom !== undefined ? delta.zoom : board.zoom,
       code: delta.code !== undefined ? delta.code : board.code,
       language: delta.language !== undefined ? delta.language : board.language,
+      highlightedPathStartCardId: delta.highlightedPathStartCardId !== undefined ? delta.highlightedPathStartCardId : board.highlightedPathStartCardId,
       updatedAt: new Date().toISOString()
     };
 
