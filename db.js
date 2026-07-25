@@ -105,7 +105,31 @@ const BoardSchema = new mongoose.Schema({
   zoom: { type: Number, default: 1 },
   code: { type: String, default: '' },
   language: { type: String, default: 'javascript' },
-  highlightedPathStartCardId: { type: String, default: '' }
+  highlightedPathStartCardId: { type: String, default: '' },
+  boardBgColor: { type: String, default: '#0a0a0c' },
+  liveBgStyle: { type: String, default: 'none' },
+  toolbarSettings: {
+    position: {
+      x: { type: Number, default: 20 },
+      y: { type: Number, default: 200 }
+    },
+    orientation: { type: String, enum: ['vertical', 'horizontal'], default: 'vertical' }
+  },
+  stylePresets: {
+    type: [{
+      id: String,
+      key: String,
+      name: String,
+      toolMode: String,
+      connectorStyle: String,
+      connectorAnimation: String,
+      connectorColor: String,
+      connectorThickness: Number,
+      penColor: String,
+      penThickness: Number
+    }],
+    default: []
+  }
 }, { timestamps: true });
 
 const BoardModel = mongoose.model('Board', BoardSchema);
@@ -207,6 +231,10 @@ export const createBoard = async (name, password = '', protectionMode = 'none') 
       drawings: [],
       pan: { x: 0, y: 0 },
       zoom: 1,
+      boardBgColor: '#0a0a0c',
+      liveBgStyle: 'none',
+      toolbarSettings: { position: { x: 20, y: 200 }, orientation: 'vertical' },
+      stylePresets: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -228,6 +256,10 @@ export const updateBoard = async (id, data) => {
     if (data.code !== undefined) updateFields.code = data.code;
     if (data.language !== undefined) updateFields.language = data.language;
     if (data.highlightedPathStartCardId !== undefined) updateFields.highlightedPathStartCardId = data.highlightedPathStartCardId;
+    if (data.boardBgColor !== undefined) updateFields.boardBgColor = data.boardBgColor;
+    if (data.liveBgStyle !== undefined) updateFields.liveBgStyle = data.liveBgStyle;
+    if (data.toolbarSettings !== undefined) updateFields.toolbarSettings = data.toolbarSettings;
+    if (data.stylePresets !== undefined) updateFields.stylePresets = data.stylePresets;
 
     return await BoardModel.findByIdAndUpdate(
       id,
@@ -249,6 +281,10 @@ export const updateBoard = async (id, data) => {
       code: data.code !== undefined ? data.code : db.boards[index].code,
       language: data.language !== undefined ? data.language : db.boards[index].language,
       highlightedPathStartCardId: data.highlightedPathStartCardId !== undefined ? data.highlightedPathStartCardId : db.boards[index].highlightedPathStartCardId,
+      boardBgColor: data.boardBgColor !== undefined ? data.boardBgColor : db.boards[index].boardBgColor,
+      liveBgStyle: data.liveBgStyle !== undefined ? data.liveBgStyle : db.boards[index].liveBgStyle,
+      toolbarSettings: data.toolbarSettings !== undefined ? data.toolbarSettings : db.boards[index].toolbarSettings,
+      stylePresets: data.stylePresets !== undefined ? data.stylePresets : db.boards[index].stylePresets,
       updatedAt: new Date().toISOString()
     };
     await writeLocalDB(db);
@@ -306,6 +342,10 @@ export const patchBoard = async (id, delta) => {
     if (delta.code !== undefined) updateFields.code = delta.code;
     if (delta.language !== undefined) updateFields.language = delta.language;
     if (delta.highlightedPathStartCardId !== undefined) updateFields.highlightedPathStartCardId = delta.highlightedPathStartCardId;
+    if (delta.boardBgColor !== undefined) updateFields.boardBgColor = delta.boardBgColor;
+    if (delta.liveBgStyle !== undefined) updateFields.liveBgStyle = delta.liveBgStyle;
+    if (delta.toolbarSettings !== undefined) updateFields.toolbarSettings = delta.toolbarSettings;
+    if (delta.stylePresets !== undefined) updateFields.stylePresets = delta.stylePresets;
 
     return await BoardModel.findByIdAndUpdate(
       id,
@@ -357,6 +397,10 @@ export const patchBoard = async (id, delta) => {
       code: delta.code !== undefined ? delta.code : board.code,
       language: delta.language !== undefined ? delta.language : board.language,
       highlightedPathStartCardId: delta.highlightedPathStartCardId !== undefined ? delta.highlightedPathStartCardId : board.highlightedPathStartCardId,
+      boardBgColor: delta.boardBgColor !== undefined ? delta.boardBgColor : board.boardBgColor,
+      liveBgStyle: delta.liveBgStyle !== undefined ? delta.liveBgStyle : board.liveBgStyle,
+      toolbarSettings: delta.toolbarSettings !== undefined ? delta.toolbarSettings : board.toolbarSettings,
+      stylePresets: delta.stylePresets !== undefined ? delta.stylePresets : board.stylePresets,
       updatedAt: new Date().toISOString()
     };
 
