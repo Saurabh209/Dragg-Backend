@@ -58,7 +58,8 @@ const CardSchema = new mongoose.Schema({
   notesFontFamily: { type: String, default: 'sans' },
   notesFontWeight: { type: String, default: 'normal' },
   notesFontStyle: { type: String, default: 'normal' },
-  features: { type: CardFeaturesSchema, default: () => ({ notes: true, sketch: true, attachments: true, tags: true, colorPalette: true, completedStatus: true, connectPorts: true }) }
+  features: { type: CardFeaturesSchema, default: () => ({ notes: true, sketch: true, attachments: true, tags: true, colorPalette: true, completedStatus: true, connectPorts: true }) },
+  nodeLayout: { type: String, default: 'four-node' } // 'four-node' | 'freestyle'
 });
 
 const ConnectionSchema = new mongoose.Schema({
@@ -67,7 +68,15 @@ const ConnectionSchema = new mongoose.Schema({
   fromSide: { type: String, default: 'right' },
   toCardId: String,
   toSide: { type: String, default: 'left' },
-  label: String
+  label: String,
+  style: { type: String, default: 'default' },
+  color: { type: String },
+  animation: { type: String, default: 'none' },
+  thickness: { type: Number, default: 2.5 },
+  fromOffsetX: Number,
+  fromOffsetY: Number,
+  toOffsetX: Number,
+  toOffsetY: Number
 });
 
 const StrokePointSchema = new mongoose.Schema({
