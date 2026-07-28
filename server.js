@@ -71,11 +71,11 @@ app.get('/api/boards/:id', async (req, res) => {
 // Create new board
 app.post('/api/boards', async (req, res) => {
   try {
-    const { name, password, protectionMode } = req.body;
+    const { name, password, protectionMode, preset } = req.body;
     if (!name) {
       return res.status(400).json({ error: 'Board name is required' });
     }
-    const newBoard = await createBoard(name, password, protectionMode);
+    const newBoard = await createBoard(name, password, protectionMode, preset);
     
     const boardData = newBoard.toObject ? newBoard.toObject() : { ...newBoard };
     const hashedPassword = boardData.password;

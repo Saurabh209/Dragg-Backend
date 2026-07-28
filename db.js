@@ -95,6 +95,7 @@ const BoardSchema = new mongoose.Schema({
   name: { type: String, required: true },
   password: { type: String, default: '' },
   protectionMode: { type: String, enum: ['none', 'full', 'partial'], default: 'none' },
+  preset: { type: String, enum: ['freestyle', 'system_design'], default: 'freestyle' },
   cards: { type: [CardSchema], default: [] },
   connections: { type: [ConnectionSchema], default: [] },
   drawings: { type: [StrokeSchema], default: [] },
@@ -188,7 +189,7 @@ export const verifyPassword = (password, hashedPassword) => {
 export const getBoards = async () => {
   if (!useLocal) {
     // Project only basic fields and the ID/types of arrays to count details without loading large base64 content
-    return await BoardModel.find({}, 'name updatedAt zoom pan protectionMode cards.id cards.type connections.id drawings.tool').sort({ updatedAt: -1 });
+    return await BoardModel.find({}, 'name updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ updatedAt: -1 });
   } else {
     const db = await readLocalDB();
     return db.boards.map(b => ({
@@ -198,6 +199,7 @@ export const getBoards = async () => {
       zoom: b.zoom,
       pan: b.pan,
       protectionMode: b.protectionMode || 'none',
+      preset: b.preset || 'freestyle',
       cards: (b.cards || []).map(c => ({ id: c.id, type: c.type })),
       connections: (b.connections || []).map(c => ({ id: c.id })),
       drawings: (b.drawings || []).map(d => ({ tool: d.tool }))
@@ -214,10 +216,10 @@ export const getBoardById = async (id) => {
   }
 };
 
-export const createBoard = async (name, password = '', protectionMode = 'none') => {
+export const createBoard = async (name, password = '', protectionMode = 'none', preset = 'freestyle') => {
   const hashedPassword = password ? hashPassword(password) : '';
   if (!useLocal) {
-    const board = new BoardModel({ name, password: hashedPassword, protectionMode });
+    const board = new BoardModel({ name, password: hashedPassword, protectionMode, preset });
     return await board.save();
   } else {
     const db = await readLocalDB();
@@ -226,6 +228,7 @@ export const createBoard = async (name, password = '', protectionMode = 'none') 
       name,
       password: hashedPassword,
       protectionMode,
+      preset,
       cards: [],
       connections: [],
       drawings: [],
