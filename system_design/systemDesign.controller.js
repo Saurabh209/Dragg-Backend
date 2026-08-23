@@ -1,11 +1,13 @@
+import crypto from 'crypto';
 import { SystemDesignBoardModel } from './systemDesign.modal.js';
+import { BoardModel } from '../modal.js';
 import { hashPassword, verifySystemDesignBoardAccess } from './systemDesign.middleware.js';
 import { getLocalDB, saveLocalDB, isMongoConnected } from '../db.js';
 
 export const handleGetAllSystemDesignBoards = async (req, res) => {
   try {
     if (isMongoConnected()) {
-      const boards = await SystemDesignBoardModel.find({}, '_id name createdAt updatedAt protectionMode preset').lean();
+      const boards = await SystemDesignBoardModel.find({}, '_id name createdAt updatedAt protectionMode preset').sort({ createdAt: -1 }).lean();
       return res.json(boards);
     }
     const db = await getLocalDB();
@@ -105,12 +107,16 @@ export const handleUpdateSystemDesignBoard = async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
     if (isMongoConnected()) {
-      const updated = await SystemDesignBoardModel.findByIdAndUpdate(id, updateData, { new: true }).lean();
+      let updated = await SystemDesignBoardModel.findByIdAndUpdate(id, updateData, { new: true }).catch(() => null);
+      if (!updated) updated = await SystemDesignBoardModel.findOneAndUpdate({ _id: id }, updateData, { new: true }).catch(() => null);
+      if (!updated) updated = await BoardModel.findByIdAndUpdate(id, updateData, { new: true }).catch(() => null);
+      if (!updated) updated = await BoardModel.findOneAndUpdate({ _id: id }, updateData, { new: true }).catch(() => null);
       if (!updated) return res.status(404).json({ error: 'System design board not found' });
-      return res.json({ ...updated, password: '' });
+      const boardObj = updated.toObject ? updated.toObject() : { ...updated };
+      return res.json({ ...boardObj, password: '' });
     }
     const db = await getLocalDB();
-    const index = db.boards.findIndex(b => b._id === id);
+    const index = db.boards.findIndex(b => String(b._id) === String(id));
     if (index === -1) return res.status(404).json({ error: 'Board not found' });
     db.boards[index] = { ...db.boards[index], ...updateData, updatedAt: new Date().toISOString() };
     await saveLocalDB(db);
@@ -124,12 +130,38 @@ export const handleUpdateSystemDesignBoard = async (req, res) => {
 export const handleDeleteSystemDesignBoard = async (req, res) => {
   try {
     const { id } = req.params;
+    let board;
     if (isMongoConnected()) {
-      await SystemDesignBoardModel.findByIdAndDelete(id);
+      board = await SystemDesignBoardModel.findById(id).lean().catch(() => null);
+      if (!board) board = await SystemDesignBoardModel.findOne({ _id: id }).lean().catch(() => null);
+      if (!board) board = await BoardModel.findById(id).lean().catch(() => null);
+      if (!board) board = await BoardModel.findOne({ _id: id }).lean().catch(() => null);
+    } else {
+      const db = await getLocalDB();
+      board = (db.boards || []).find(b => String(b._id) === String(id));
+    }
+    if (!board) return res.status(404).json({ error: 'Board not found' });
+
+    if (board.protectionMode === 'full' || board.protectionMode === 'partial') {
+      const clientPassword = req.headers['x-board-password'];
+      const salt = 'canvas-board-salt-1289';
+      const sha256Hashed = crypto.createHash('sha256').update((clientPassword || '') + salt).digest('hex');
+      const pbkdf2Hashed = crypto.pbkdf2Sync(clientPassword || '', salt, 1000, 64, 'sha512').toString('hex');
+      const isOk = board.password === sha256Hashed || board.password === pbkdf2Hashed || clientPassword === board.password;
+      if (!isOk) {
+        return res.status(401).json({ error: 'Incorrect password. Board deletion denied.' });
+      }
+    }
+
+    if (isMongoConnected()) {
+      await SystemDesignBoardModel.findByIdAndDelete(id).catch(() => null);
+      await SystemDesignBoardModel.findOneAndDelete({ _id: id }).catch(() => null);
+      await BoardModel.findByIdAndDelete(id).catch(() => null);
+      await BoardModel.findOneAndDelete({ _id: id }).catch(() => null);
       return res.json({ success: true, id });
     }
     const db = await getLocalDB();
-    db.boards = db.boards.filter(b => b._id !== id);
+    db.boards = (db.boards || []).filter(b => String(b._id) !== String(id));
     await saveLocalDB(db);
     return res.json({ success: true, id });
   } catch (error) {

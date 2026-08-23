@@ -42,22 +42,26 @@ export const hashPassword = (password) => {
 
 export const verifyPassword = (password, hashedPassword) => {
   if (!password || !hashedPassword) return false;
-  return hashPassword(password) === hashedPassword || password === hashedPassword;
+  const salt = 'canvas-board-salt-1289';
+  const sha256Hashed = crypto.createHash('sha256').update(password + salt).digest('hex');
+  const pbkdf2Hashed = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+  return hashedPassword === sha256Hashed || hashedPassword === pbkdf2Hashed || password === hashedPassword;
 };
 
 // Data operations
 export const getBoards = async () => {
   if (!isLocalFallback()) {
-    const legacy = await BoardModel.find({}, 'name updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ updatedAt: -1 }).lean();
-    const freestyle = await FreestyleBoardModel.find({}, 'name updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ updatedAt: -1 }).lean();
-    const systemDesign = await SystemDesignBoardModel.find({}, 'name updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ updatedAt: -1 }).lean();
+    const legacy = await BoardModel.find({}, 'name createdAt updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ createdAt: -1 }).lean();
+    const freestyle = await FreestyleBoardModel.find({}, 'name createdAt updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ createdAt: -1 }).lean();
+    const systemDesign = await SystemDesignBoardModel.find({}, 'name createdAt updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ createdAt: -1 }).lean();
     const combined = [...legacy, ...freestyle, ...systemDesign];
-    return combined.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    return combined.sort((a, b) => new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0));
   } else {
     const db = await readLocalDB();
     return (db.boards || []).map(b => ({
       _id: b._id,
       name: b.name,
+      createdAt: b.createdAt,
       updatedAt: b.updatedAt,
       zoom: b.zoom,
       pan: b.pan,
@@ -66,19 +70,30 @@ export const getBoards = async () => {
       cards: (b.cards || []).map(c => ({ id: c.id, type: c.type })),
       connections: (b.connections || []).map(c => ({ id: c.id })),
       drawings: (b.drawings || []).map(d => ({ tool: d.tool }))
-    })).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    })).sort((a, b) => new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0));
   }
 };
 
 export const getBoardById = async (id) => {
   if (!isLocalFallback()) {
-    let board = await BoardModel.findById(id);
-    if (!board) board = await FreestyleBoardModel.findById(id);
-    if (!board) board = await SystemDesignBoardModel.findById(id);
-    return board;
+    try {
+      let board = await BoardModel.findById(id).catch(() => null);
+      if (!board) board = await BoardModel.findOne({ _id: id }).catch(() => null);
+
+      if (!board) board = await FreestyleBoardModel.findById(id).catch(() => null);
+      if (!board) board = await FreestyleBoardModel.findOne({ _id: id }).catch(() => null);
+
+      if (!board) board = await SystemDesignBoardModel.findById(id).catch(() => null);
+      if (!board) board = await SystemDesignBoardModel.findOne({ _id: id }).catch(() => null);
+
+      return board;
+    } catch (err) {
+      console.error('Error in getBoardById:', err);
+      return null;
+    }
   } else {
     const db = await readLocalDB();
-    return db.boards.find(b => b._id === id) || null;
+    return db.boards.find(b => String(b._id) === String(id)) || null;
   }
 };
 
@@ -275,13 +290,16 @@ export const updateBoard = async (id, data) => {
     if (data.toolbarSettings !== undefined) updateFields.toolbarSettings = data.toolbarSettings;
     if (data.stylePresets !== undefined) updateFields.stylePresets = data.stylePresets;
 
-    let updated = await BoardModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
-    if (!updated) updated = await FreestyleBoardModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
-    if (!updated) updated = await SystemDesignBoardModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true });
+    let updated = await BoardModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true }).catch(() => null);
+    if (!updated) updated = await BoardModel.findOneAndUpdate({ _id: id }, { $set: updateFields }, { new: true }).catch(() => null);
+    if (!updated) updated = await FreestyleBoardModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true }).catch(() => null);
+    if (!updated) updated = await FreestyleBoardModel.findOneAndUpdate({ _id: id }, { $set: updateFields }, { new: true }).catch(() => null);
+    if (!updated) updated = await SystemDesignBoardModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true }).catch(() => null);
+    if (!updated) updated = await SystemDesignBoardModel.findOneAndUpdate({ _id: id }, { $set: updateFields }, { new: true }).catch(() => null);
     return updated;
   } else {
     const db = await readLocalDB();
-    const index = db.boards.findIndex(b => b._id === id);
+    const index = db.boards.findIndex(b => String(b._id) === String(id));
     if (index === -1) return null;
     db.boards[index] = {
       ...db.boards[index],
@@ -307,14 +325,18 @@ export const updateBoard = async (id, data) => {
 
 export const patchBoard = async (id, delta) => {
   if (!isLocalFallback()) {
-    let existingBoard = await BoardModel.findById(id);
+    let existingBoard = await BoardModel.findById(id).catch(() => null);
+    if (!existingBoard) existingBoard = await BoardModel.findOne({ _id: id }).catch(() => null);
     let ModelToUpdate = BoardModel;
+
     if (!existingBoard) {
-      existingBoard = await FreestyleBoardModel.findById(id);
+      existingBoard = await FreestyleBoardModel.findById(id).catch(() => null);
+      if (!existingBoard) existingBoard = await FreestyleBoardModel.findOne({ _id: id }).catch(() => null);
       ModelToUpdate = FreestyleBoardModel;
     }
     if (!existingBoard) {
-      existingBoard = await SystemDesignBoardModel.findById(id);
+      existingBoard = await SystemDesignBoardModel.findById(id).catch(() => null);
+      if (!existingBoard) existingBoard = await SystemDesignBoardModel.findOne({ _id: id }).catch(() => null);
       ModelToUpdate = SystemDesignBoardModel;
     }
     if (!existingBoard) return null;
