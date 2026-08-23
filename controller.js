@@ -513,12 +513,8 @@ export const handleGetBoardById = async (req, res) => {
 
     const boardData = board.toObject ? board.toObject() : { ...board };
     
-    // Partial protection mode mask sensitive fields if invalid password
+    // Partial protection mode marks isPartialProtected flag if password not provided
     if (board.protectionMode === 'partial' && !verifyPassword(clientPassword, board.password)) {
-      boardData.cards = [];
-      boardData.connections = [];
-      boardData.drawings = [];
-      boardData.code = '';
       boardData.isPartialProtected = true;
     }
 

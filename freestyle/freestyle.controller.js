@@ -49,7 +49,7 @@ export const handleGetFreestyleBoardById = async (req, res) => {
       }));
 
       if (!access.allowed && board.protectionMode === 'partial') {
-        const sanitized = { ...board, password: '', cards: [], connections: [], drawings: [], code: '', isPartialProtected: true };
+        const sanitized = { ...board, cards: formattedCards, password: '', isPartialProtected: true };
         return res.json(sanitized);
       }
       return res.json({ ...board, cards: formattedCards, password: '' });
