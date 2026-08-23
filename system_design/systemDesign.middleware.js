@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 export function hashPassword(password) {
   if (!password) return '';
-  const salt = 'sysdesign-board-salt-9941';
+  const salt = 'canvas-board-salt-1289';
   return crypto.createHash('sha256').update(password + salt).digest('hex');
 }
 
@@ -20,9 +20,17 @@ export function verifySystemDesignBoardAccess(board, providedPassword) {
   if (!board.password || board.protectionMode === 'none') {
     return { allowed: true };
   }
-  const hashed = hashPassword(providedPassword);
-  if (board.password === hashed) {
+  if (!providedPassword) return { allowed: false, reason: 'Password required' };
+
+  if (providedPassword === board.password) {
     return { allowed: true };
   }
+
+  const salt = 'canvas-board-salt-1289';
+  const sha256Hashed = crypto.createHash('sha256').update(providedPassword + salt).digest('hex');
+  if (board.password === sha256Hashed) {
+    return { allowed: true };
+  }
+
   return { allowed: false, reason: 'Invalid password' };
 }

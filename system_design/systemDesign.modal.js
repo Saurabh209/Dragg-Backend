@@ -34,6 +34,18 @@ export const OrthogonalConnectionSchema = new mongoose.Schema({
   id: String,
   fromCardId: String,
   toCardId: String,
+  fromSide: String,
+  toSide: String,
+  label: String,
+  style: String,
+  color: String,
+  animation: String,
+  thickness: Number,
+  fromOffsetX: Number,
+  fromOffsetY: Number,
+  toOffsetX: Number,
+  toOffsetY: Number,
+  waypoints: [{ x: Number, y: Number }],
   protocol: { type: String, default: 'gRPC' }, // 'HTTP' | 'gRPC' | 'Kafka' | 'TCP'
   latencyMs: { type: Number, default: 5 },
   routingMode: { type: String, default: 'orthogonal' } // 'orthogonal' | 'bezier'

@@ -37,15 +37,15 @@ const writeLocalDB = async (data) => {
 export const hashPassword = (password) => {
   if (!password) return '';
   const salt = 'canvas-board-salt-1289';
-  return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+  return crypto.createHash('sha256').update(password + salt).digest('hex');
 };
 
 export const verifyPassword = (password, hashedPassword) => {
   if (!password || !hashedPassword) return false;
+  if (password === hashedPassword) return true;
   const salt = 'canvas-board-salt-1289';
   const sha256Hashed = crypto.createHash('sha256').update(password + salt).digest('hex');
-  const pbkdf2Hashed = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-  return hashedPassword === sha256Hashed || hashedPassword === pbkdf2Hashed || password === hashedPassword;
+  return hashedPassword === sha256Hashed;
 };
 
 // Data operations

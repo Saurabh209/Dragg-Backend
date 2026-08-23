@@ -66,7 +66,8 @@ export const ConnectionSchema = new mongoose.Schema({
   fromOffsetX: Number,
   fromOffsetY: Number,
   toOffsetX: Number,
-  toOffsetY: Number
+  toOffsetY: Number,
+  waypoints: [{ x: Number, y: Number }]
 });
 
 export const StrokePointSchema = new mongoose.Schema({

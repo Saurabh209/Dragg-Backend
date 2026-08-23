@@ -4,7 +4,8 @@ import {
   handleGetSystemDesignBoardById,
   handleCreateSystemDesignBoard,
   handleUpdateSystemDesignBoard,
-  handleDeleteSystemDesignBoard
+  handleDeleteSystemDesignBoard,
+  handleVerifySystemDesignBoardPassword
 } from './systemDesign.controller.js';
 import { validateSystemDesignBoardData } from './systemDesign.middleware.js';
 
@@ -12,6 +13,7 @@ const router = Router();
 
 router.get('/', handleGetAllSystemDesignBoards);
 router.post('/', validateSystemDesignBoardData, handleCreateSystemDesignBoard);
+router.post('/:id/verify', handleVerifySystemDesignBoardPassword);
 router.get('/:id', handleGetSystemDesignBoardById);
 router.put('/:id', handleUpdateSystemDesignBoard);
 router.patch('/:id', handleUpdateSystemDesignBoard);

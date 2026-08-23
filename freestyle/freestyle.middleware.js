@@ -22,12 +22,15 @@ export function verifyFreestyleBoardAccess(board, providedPassword) {
   }
   if (!providedPassword) return { allowed: false, reason: 'Password required' };
 
-  const salt = 'canvas-board-salt-1289';
-  const sha256Hashed = crypto.createHash('sha256').update(providedPassword + salt).digest('hex');
-  const pbkdf2Hashed = crypto.pbkdf2Sync(providedPassword, salt, 1000, 64, 'sha512').toString('hex');
-
-  if (board.password === sha256Hashed || board.password === pbkdf2Hashed || providedPassword === board.password) {
+  if (providedPassword === board.password) {
     return { allowed: true };
   }
+
+  const salt = 'canvas-board-salt-1289';
+  const sha256Hashed = crypto.createHash('sha256').update(providedPassword + salt).digest('hex');
+  if (board.password === sha256Hashed) {
+    return { allowed: true };
+  }
+
   return { allowed: false, reason: 'Invalid password' };
 }

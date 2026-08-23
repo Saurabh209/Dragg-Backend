@@ -169,3 +169,26 @@ export const handleDeleteSystemDesignBoard = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const handleVerifySystemDesignBoardPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+    let board;
+    if (isMongoConnected()) {
+      board = await SystemDesignBoardModel.findById(id).lean().catch(() => null);
+      if (!board) board = await SystemDesignBoardModel.findOne({ _id: id }).lean().catch(() => null);
+      if (!board) board = await BoardModel.findById(id).lean().catch(() => null);
+      if (!board) board = await BoardModel.findOne({ _id: id }).lean().catch(() => null);
+    } else {
+      const db = await getLocalDB();
+      board = (db.boards || []).find(b => String(b._id) === String(id));
+    }
+    if (!board) return res.status(404).json({ error: 'Board not found' });
+    const access = verifySystemDesignBoardAccess(board, password);
+    return res.json({ success: access.allowed, hashedPassword: access.allowed ? board.password : undefined });
+  } catch (error) {
+    console.error('Error verifying system design board password:', error);
+    res.status(500).json({ error: 'Failed to verify password' });
+  }
+};
