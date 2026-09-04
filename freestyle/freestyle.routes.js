@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  handleGetAllFreestyleBoards,
+  handleGetAllFreestyleCanvas,
   handleGetFreestyleBoardById,
   handleCreateFreestyleBoard,
   handleUpdateFreestyleBoard,
@@ -11,7 +11,7 @@ import { validateFreestyleBoardData } from './freestyle.middleware.js';
 
 const router = Router();
 
-router.get('/', handleGetAllFreestyleBoards);
+router.get('/', handleGetAllFreestyleCanvas);
 router.post('/', validateFreestyleBoardData, handleCreateFreestyleBoard);
 router.get('/:id', handleGetFreestyleBoardById);
 router.post('/:id/verify', handleVerifyFreestyleBoardPassword);

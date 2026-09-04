@@ -27,7 +27,8 @@ export const SystemNodeSchema = new mongoose.Schema({
   badge: {
     text: { type: String, default: '' },
     color: { type: String, default: '' }
-  }
+  },
+  highlightId: { type: String, default: '' }
 });
 
 export const OrthogonalConnectionSchema = new mongoose.Schema({
@@ -45,13 +46,14 @@ export const OrthogonalConnectionSchema = new mongoose.Schema({
   fromOffsetY: Number,
   toOffsetX: Number,
   toOffsetY: Number,
+  customId: { type: String, default: '' },
   waypoints: [{ x: Number, y: Number }],
   protocol: { type: String, default: 'gRPC' }, // 'HTTP' | 'gRPC' | 'Kafka' | 'TCP'
   latencyMs: { type: Number, default: 5 },
   routingMode: { type: String, default: 'orthogonal' } // 'orthogonal' | 'bezier'
 });
 
-export const SystemDesignBoardSchema = new mongoose.Schema({
+export const SystemDesignCanvasSchema = new mongoose.Schema({
   _id: { type: String, default: () => 'sd_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5) },
   name: { type: String, required: true },
   password: { type: String, default: '' },
@@ -67,9 +69,8 @@ export const SystemDesignBoardSchema = new mongoose.Schema({
   zoom: { type: Number, default: 1 },
   boardBgColor: { type: String, default: '#0d1117' },
   liveBgStyle: { type: String, default: 'grid' }
-}, { timestamps: true });
+}, { timestamps: true, strict: false });
 
-if (mongoose.models && mongoose.models.SystemDesignBoard) {
-  delete mongoose.models.SystemDesignBoard;
-}
-export const SystemDesignBoardModel = mongoose.model('SystemDesignBoard', SystemDesignBoardSchema);
+export const SystemDesignCanvasModel = mongoose.models.SystemDesignCanvas || mongoose.model('SystemDesignCanvas', SystemDesignCanvasSchema, 'systemDesignBoard');
+export const SystemDesignBoardModel = SystemDesignCanvasModel;
+

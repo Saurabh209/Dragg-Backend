@@ -2,9 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
-import { BoardModel } from './modal.js';
-import { FreestyleBoardModel } from './freestyle/freestyle.modal.js';
-import { SystemDesignBoardModel } from './system_design/systemDesign.modal.js';
+import { FreestyleCanvasModel } from './freestyle/freestyle.modal.js';
+import { SystemDesignCanvasModel } from './system_design/systemDesign.modal.js';
 import { isLocalFallback } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -51,10 +50,9 @@ export const verifyPassword = (password, hashedPassword) => {
 // Data operations
 export const getBoards = async () => {
   if (!isLocalFallback()) {
-    const legacy = await BoardModel.find({}, 'name createdAt updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ createdAt: -1 }).lean();
-    const freestyle = await FreestyleBoardModel.find({}, 'name createdAt updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ createdAt: -1 }).lean();
-    const systemDesign = await SystemDesignBoardModel.find({}, 'name createdAt updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ createdAt: -1 }).lean();
-    const combined = [...legacy, ...freestyle, ...systemDesign];
+    const freestyle = await FreestyleCanvasModel.find({}, 'name createdAt updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ createdAt: -1 }).lean();
+    const systemDesign = await SystemDesignCanvasModel.find({}, 'name createdAt updatedAt zoom pan protectionMode preset cards.id cards.type connections.id drawings.tool').sort({ createdAt: -1 }).lean();
+    const combined = [...freestyle, ...systemDesign];
     return combined.sort((a, b) => new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0));
   } else {
     const db = await readLocalDB();
@@ -77,14 +75,11 @@ export const getBoards = async () => {
 export const getBoardById = async (id) => {
   if (!isLocalFallback()) {
     try {
-      let board = await BoardModel.findById(id).catch(() => null);
-      if (!board) board = await BoardModel.findOne({ _id: id }).catch(() => null);
+      let board = await FreestyleCanvasModel.findById(id).catch(() => null);
+      if (!board) board = await FreestyleCanvasModel.findOne({ _id: id }).catch(() => null);
 
-      if (!board) board = await FreestyleBoardModel.findById(id).catch(() => null);
-      if (!board) board = await FreestyleBoardModel.findOne({ _id: id }).catch(() => null);
-
-      if (!board) board = await SystemDesignBoardModel.findById(id).catch(() => null);
-      if (!board) board = await SystemDesignBoardModel.findOne({ _id: id }).catch(() => null);
+      if (!board) board = await SystemDesignCanvasModel.findById(id).catch(() => null);
+      if (!board) board = await SystemDesignCanvasModel.findOne({ _id: id }).catch(() => null);
 
       return board;
     } catch (err) {
@@ -238,15 +233,27 @@ export const createBoard = async (name, password = '', protectionMode = 'none', 
   }
 
   if (!isLocalFallback()) {
-    const board = new BoardModel({
-      name,
-      password: hashedPassword,
-      protectionMode,
-      preset,
-      cards: initialCards,
-      connections: initialConnections
-    });
-    return await board.save();
+    if (preset === 'system_design') {
+      const canvas = new SystemDesignCanvasModel({
+        name,
+        password: hashedPassword,
+        protectionMode,
+        preset: 'system_design',
+        cards: initialCards,
+        connections: initialConnections
+      });
+      return await canvas.save();
+    } else {
+      const canvas = new FreestyleCanvasModel({
+        name,
+        password: hashedPassword,
+        protectionMode,
+        preset: 'freestyle',
+        cards: initialCards,
+        connections: initialConnections
+      });
+      return await canvas.save();
+    }
   } else {
     const db = await readLocalDB();
     const newBoard = {
@@ -290,12 +297,10 @@ export const updateBoard = async (id, data) => {
     if (data.toolbarSettings !== undefined) updateFields.toolbarSettings = data.toolbarSettings;
     if (data.stylePresets !== undefined) updateFields.stylePresets = data.stylePresets;
 
-    let updated = await BoardModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true }).catch(() => null);
-    if (!updated) updated = await BoardModel.findOneAndUpdate({ _id: id }, { $set: updateFields }, { new: true }).catch(() => null);
-    if (!updated) updated = await FreestyleBoardModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true }).catch(() => null);
-    if (!updated) updated = await FreestyleBoardModel.findOneAndUpdate({ _id: id }, { $set: updateFields }, { new: true }).catch(() => null);
-    if (!updated) updated = await SystemDesignBoardModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true }).catch(() => null);
-    if (!updated) updated = await SystemDesignBoardModel.findOneAndUpdate({ _id: id }, { $set: updateFields }, { new: true }).catch(() => null);
+    let updated = await FreestyleCanvasModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true }).catch(() => null);
+    if (!updated) updated = await FreestyleCanvasModel.findOneAndUpdate({ _id: id }, { $set: updateFields }, { new: true }).catch(() => null);
+    if (!updated) updated = await SystemDesignCanvasModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true }).catch(() => null);
+    if (!updated) updated = await SystemDesignCanvasModel.findOneAndUpdate({ _id: id }, { $set: updateFields }, { new: true }).catch(() => null);
     return updated;
   } else {
     const db = await readLocalDB();
@@ -325,19 +330,14 @@ export const updateBoard = async (id, data) => {
 
 export const patchBoard = async (id, delta) => {
   if (!isLocalFallback()) {
-    let existingBoard = await BoardModel.findById(id).catch(() => null);
-    if (!existingBoard) existingBoard = await BoardModel.findOne({ _id: id }).catch(() => null);
-    let ModelToUpdate = BoardModel;
+    let existingBoard = await FreestyleCanvasModel.findById(id).catch(() => null);
+    if (!existingBoard) existingBoard = await FreestyleCanvasModel.findOne({ _id: id }).catch(() => null);
+    let ModelToUpdate = FreestyleCanvasModel;
 
     if (!existingBoard) {
-      existingBoard = await FreestyleBoardModel.findById(id).catch(() => null);
-      if (!existingBoard) existingBoard = await FreestyleBoardModel.findOne({ _id: id }).catch(() => null);
-      ModelToUpdate = FreestyleBoardModel;
-    }
-    if (!existingBoard) {
-      existingBoard = await SystemDesignBoardModel.findById(id).catch(() => null);
-      if (!existingBoard) existingBoard = await SystemDesignBoardModel.findOne({ _id: id }).catch(() => null);
-      ModelToUpdate = SystemDesignBoardModel;
+      existingBoard = await SystemDesignCanvasModel.findById(id).catch(() => null);
+      if (!existingBoard) existingBoard = await SystemDesignCanvasModel.findOne({ _id: id }).catch(() => null);
+      ModelToUpdate = SystemDesignCanvasModel;
     }
     if (!existingBoard) return null;
 
@@ -455,9 +455,10 @@ export const patchBoard = async (id, delta) => {
 
 export const deleteBoard = async (id) => {
   if (!isLocalFallback()) {
-    let deleted = await BoardModel.findByIdAndDelete(id);
-    if (!deleted) deleted = await FreestyleBoardModel.findByIdAndDelete(id);
-    if (!deleted) deleted = await SystemDesignBoardModel.findByIdAndDelete(id);
+    let deleted = await FreestyleCanvasModel.findByIdAndDelete(id).catch(() => null);
+    if (!deleted) deleted = await FreestyleCanvasModel.findOneAndDelete({ _id: id }).catch(() => null);
+    if (!deleted) deleted = await SystemDesignCanvasModel.findByIdAndDelete(id).catch(() => null);
+    if (!deleted) deleted = await SystemDesignCanvasModel.findOneAndDelete({ _id: id }).catch(() => null);
     return deleted;
   } else {
     const db = await readLocalDB();
@@ -626,3 +627,21 @@ export const handleDeleteBoard = async (req, res) => {
     res.status(500).json({ error: 'Failed to delete board' });
   }
 };
+
+// Canvas Terminology Aliases
+export const getCanvases = getBoards;
+export const getCanvasById = getBoardById;
+export const createCanvas = createBoard;
+export const updateCanvas = updateBoard;
+export const patchCanvas = patchBoard;
+export const deleteCanvas = deleteBoard;
+export const verifyCanvasPassword = verifyPassword;
+
+export const handleGetAllCanvases = handleGetAllBoards;
+export const handleGetCanvasById = handleGetBoardById;
+export const handleCreateCanvas = handleCreateBoard;
+export const handleUpdateCanvas = handleUpdateBoard;
+export const handlePatchCanvas = handlePatchBoard;
+export const handleDeleteCanvas = handleDeleteBoard;
+export const handleVerifyCanvasPassword = handleVerifyPassword;
+

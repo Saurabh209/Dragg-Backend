@@ -49,7 +49,8 @@ export const CardSchema = new mongoose.Schema({
   notesFontWeight: { type: String, default: 'normal' },
   notesFontStyle: { type: String, default: 'normal' },
   features: { type: CardFeaturesSchema, default: () => ({ notes: true, sketch: true, attachments: true, tags: true, colorPalette: true, completedStatus: true, connectPorts: true }) },
-  nodeLayout: { type: String, default: 'four-node' } // 'four-node' | 'freestyle'
+  nodeLayout: { type: String, default: 'four-node' }, // 'four-node' | 'freestyle'
+  highlightId: { type: String, default: '' }
 });
 
 export const ConnectionSchema = new mongoose.Schema({
@@ -67,6 +68,7 @@ export const ConnectionSchema = new mongoose.Schema({
   fromOffsetY: Number,
   toOffsetX: Number,
   toOffsetY: Number,
+  customId: { type: String, default: '' },
   waypoints: [{ x: Number, y: Number }]
 });
 
@@ -82,7 +84,7 @@ export const StrokeSchema = new mongoose.Schema({
   points: [StrokePointSchema]
 }, { _id: false });
 
-export const BoardSchema = new mongoose.Schema({
+export const CanvasSchema = new mongoose.Schema({
   _id: { type: String, default: () => 'b_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5) },
   name: { type: String, required: true },
   password: { type: String, default: '' },
@@ -123,6 +125,7 @@ export const BoardSchema = new mongoose.Schema({
     }],
     default: []
   }
-}, { timestamps: true });
+}, { timestamps: true, strict: false });
 
-export const BoardModel = mongoose.models.Board || mongoose.model('Board', BoardSchema);
+
+

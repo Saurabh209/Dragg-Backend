@@ -3,7 +3,7 @@ import { BoardModel } from '../modal.js';
 import { hashPassword, verifyFreestyleBoardAccess } from './freestyle.middleware.js';
 import { getLocalDB, saveLocalDB, isMongoConnected } from '../db.js';
 
-export const handleGetAllFreestyleBoards = async (req, res) => {
+export const handleGetAllFreestyleCanvas = async (req, res) => {
   try {
     if (isMongoConnected()) {
       const boards = await FreestyleBoardModel.find({}, '_id name createdAt updatedAt protectionMode preset').sort({ createdAt: -1 }).lean();

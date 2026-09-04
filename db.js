@@ -47,7 +47,7 @@ export const connectDB = async (mongoUri) => {
     console.warn('MongoDB connection failed. Falling back to local JSON database (db.json).');
     console.warn(`Error details: ${error.message}`);
     useLocal = true;
-    await readLocalDB();
+    await getLocalDB();
   }
 };
 
