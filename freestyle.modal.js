@@ -29,10 +29,10 @@ export const CardSchema = new mongoose.Schema({
   language: { type: String, default: 'javascript' },
   tags: [String],
   color: String,
-  type: { type: String, default: 'note' },
+  type: { type: String, default: 'note' }, // 'note' | 'image'
   imageUrl: { type: String, default: '' },
   drawingDataUrl: { type: String, default: '' },
-  cardMode: { type: String, default: 'notes' },
+  cardMode: { type: String, default: 'notes' }, // 'notes' | 'code' | 'sketch'
   attachments: { type: [AttachmentSchema], default: [] },
   completed: { type: Boolean, default: false },
   isStartNode: { type: Boolean, default: false },
@@ -49,6 +49,7 @@ export const CardSchema = new mongoose.Schema({
   notesFontWeight: { type: String, default: 'normal' },
   notesFontStyle: { type: String, default: 'normal' },
   features: { type: CardFeaturesSchema, default: () => ({ notes: true, sketch: true, attachments: true, tags: true, colorPalette: true, completedStatus: true, connectPorts: true }) },
+  cardVariant: { type: String, default: '' }, // 'minimalCard' | 'featureCard'
   nodeLayout: { type: String, default: 'freestyle' },
   highlightId: { type: String, default: '' }
 });
@@ -89,7 +90,7 @@ export const FreestyleCanvasSchema = new mongoose.Schema({
   name: { type: String, required: true },
   password: { type: String, default: '' },
   protectionMode: { type: String, enum: ['none', 'full', 'partial'], default: 'none' },
-  preset: { type: String, default: 'freestyle' },
+  preset: { type: String, enum: ['freestyle', 'system_design'], default: 'freestyle' },
   cards: { type: [CardSchema], default: [] },
   connections: { type: [ConnectionSchema], default: [] },
   drawings: { type: [StrokeSchema], default: [] },
@@ -129,4 +130,5 @@ export const FreestyleCanvasSchema = new mongoose.Schema({
 
 export const FreestyleCanvasModel = mongoose.models.FreestyleCanvas || mongoose.model('FreestyleCanvas', FreestyleCanvasSchema, 'freeStyleBoard');
 export const FreestyleBoardModel = FreestyleCanvasModel;
-
+export const CanvasModel = FreestyleCanvasModel;
+export const BoardModel = FreestyleCanvasModel;

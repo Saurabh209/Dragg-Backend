@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
-import { FreestyleCanvasModel } from './freestyle/freestyle.modal.js';
-import { SystemDesignCanvasModel } from './system_design/systemDesign.modal.js';
+import { FreestyleCanvasModel } from './freestyle.modal.js';
+import { SystemDesignCanvasModel } from './systemdesign.modal.js';
 import { isLocalFallback } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -610,7 +610,7 @@ export const handleDeleteBoard = async (req, res) => {
       const clientPassword = req.headers['x-board-password'];
       if (!verifyPassword(clientPassword, board.password)) {
         return res.status(401).json({ error: 'Password required to delete board' });
-      }
+      } 
     }
 
     const deletedBoard = await deleteBoard(req.params.id);

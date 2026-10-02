@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './db.js';
 import canvasRoutes from './routes.js';
+// import commonRoutes from './common.routes.js';
 
 dotenv.config();
 
@@ -16,7 +17,9 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Board Routes
-app.use('/api/board', canvasRoutes);
+app.use('/api/freestyle_board', canvasRoutes);
+app.use('/api/system_board', canvasRoutes);
+
 
 // Start DB connection then start Server
 const startServer = async () => {

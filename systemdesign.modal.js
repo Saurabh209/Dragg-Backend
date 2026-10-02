@@ -73,4 +73,3 @@ export const SystemDesignCanvasSchema = new mongoose.Schema({
 
 export const SystemDesignCanvasModel = mongoose.models.SystemDesignCanvas || mongoose.model('SystemDesignCanvas', SystemDesignCanvasSchema, 'systemDesignBoard');
 export const SystemDesignBoardModel = SystemDesignCanvasModel;
-
