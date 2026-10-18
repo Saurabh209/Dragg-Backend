@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import { connectDB } from './db.js';
 import canvasRoutes from './routes.js';
 // import commonRoutes from './common.routes.js';
+import { imgUploader, deleteImage } from "./controller.js";
+import { upload } from "./middleware.js";
 
 dotenv.config();
 
@@ -19,6 +21,9 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Board Routes
 app.use('/api/freestyle_board', canvasRoutes);
 app.use('/api/system_board', canvasRoutes);
+
+app.post('/api/uploads_img', upload.single('image'), imgUploader);
+app.post('/api/delete_img', deleteImage);
 
 
 // Start DB connection then start Server

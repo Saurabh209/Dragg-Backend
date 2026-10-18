@@ -31,6 +31,8 @@ export const CardSchema = new mongoose.Schema({
   color: String,
   type: { type: String, default: 'note' }, // 'note' | 'image'
   imageUrl: { type: String, default: '' },
+  imagePublicId: { type: String, default: '' },
+  aspectRatio: { type: Number, default: 0 },
   drawingDataUrl: { type: String, default: '' },
   cardMode: { type: String, default: 'notes' }, // 'notes' | 'code' | 'sketch'
   attachments: { type: [AttachmentSchema], default: [] },

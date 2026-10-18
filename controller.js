@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { FreestyleCanvasModel } from './freestyle.modal.js';
 import { SystemDesignCanvasModel } from './systemdesign.modal.js';
 import { isLocalFallback } from './db.js';
+import cloudinary from './cloudinary.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -94,7 +95,7 @@ export const getBoardById = async (id) => {
 
 export const createBoard = async (name, password = '', protectionMode = 'none', preset = 'freestyle') => {
   const hashedPassword = password ? hashPassword(password) : '';
-  
+
   let initialCards = [];
   let initialConnections = [];
 
@@ -513,7 +514,7 @@ export const handleGetBoardById = async (req, res) => {
     }
 
     const boardData = board.toObject ? board.toObject() : { ...board };
-    
+
     // Partial protection mode marks isPartialProtected flag if password not provided
     if (board.protectionMode === 'partial' && !verifyPassword(clientPassword, board.password)) {
       boardData.isPartialProtected = true;
@@ -610,14 +611,14 @@ export const handleDeleteBoard = async (req, res) => {
       const clientPassword = req.headers['x-board-password'];
       if (!verifyPassword(clientPassword, board.password)) {
         return res.status(401).json({ error: 'Password required to delete board' });
-      } 
+      }
     }
 
     const deletedBoard = await deleteBoard(req.params.id);
     if (!deletedBoard) {
       return res.status(404).json({ error: 'Board not found during deletion' });
     }
-    
+
     const boardData = deletedBoard.toObject ? deletedBoard.toObject() : { ...deletedBoard };
     delete boardData.password;
 
@@ -628,20 +629,95 @@ export const handleDeleteBoard = async (req, res) => {
   }
 };
 
-// Canvas Terminology Aliases
-export const getCanvases = getBoards;
-export const getCanvasById = getBoardById;
-export const createCanvas = createBoard;
-export const updateCanvas = updateBoard;
-export const patchCanvas = patchBoard;
-export const deleteCanvas = deleteBoard;
-export const verifyCanvasPassword = verifyPassword;
+export const imgUploader = async (req, res) => {
+  try {
+    // Format custom image name: [boardName]_[boardId]img_[timestamp]_[random]
+    const rawBoardName = req.body?.boardName || 'board';
+    const cleanBoardName = rawBoardName
+      .trim()
+      .replace(/[^a-zA-Z0-9_-]/g, '_')
+      .substring(0, 30);
 
-export const handleGetAllCanvases = handleGetAllBoards;
-export const handleGetCanvasById = handleGetBoardById;
-export const handleCreateCanvas = handleCreateBoard;
-export const handleUpdateCanvas = handleUpdateBoard;
-export const handlePatchCanvas = handlePatchBoard;
-export const handleDeleteCanvas = handleDeleteBoard;
-export const handleVerifyCanvasPassword = handleVerifyPassword;
+    const boardIdPart = req.body?.boardId ? `${req.body.boardId}_` : '';
+    const randomSuffix = Math.random().toString(36).substring(2, 8);
+    const timestamp = Date.now().toString(36);
+
+    const customPublicId = `${cleanBoardName}_${boardIdPart}img_${timestamp}_${randomSuffix}`;
+
+    // 1. If file was received via Multer (multipart/form-data)
+    if (req.file) {
+      console.log('File received via multer:', {
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        generatedPublicId: customPublicId
+      });
+
+      const streamUpload = (fileBuffer) => {
+        return new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {
+              folder: 'dragg_canvas',
+              public_id: customPublicId,
+              resource_type: 'auto',
+              quality: 'auto:good',
+              fetch_format: 'auto'
+            },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result);
+            }
+          );
+          stream.end(fileBuffer);
+        });
+      };
+
+      const result = await streamUpload(req.file.buffer);
+      return res.json({
+        success: true,
+        url: result.secure_url,
+        public_id: result.public_id
+      });
+    }
+
+    // 2. Fallback if base64 string was sent in JSON body
+    if (req.body?.image) {
+      console.log('Base64 image received in JSON body, generatedPublicId:', customPublicId);
+      const result = await cloudinary.uploader.upload(req.body.image, {
+        folder: 'dragg_canvas',
+        public_id: customPublicId,
+        resource_type: 'auto',
+        quality: 'auto:good',
+        fetch_format: 'auto'
+      });
+      return res.json({
+        success: true,
+        url: result.secure_url,
+        public_id: result.public_id
+      });
+    }
+
+    return res.status(400).json({ error: 'No image file or data provided' });
+  } catch (error) {
+    console.error('Error uploading image to Cloudinary:', error);
+    res.status(500).json({ error: 'Failed to upload image' });
+  }
+};
+
+export const deleteImage = async (req, res) => {
+  try {
+    const { public_id } = req.body;
+    if (!public_id) {
+      return res.status(400).json({ error: 'public_id is required' });
+    }
+
+    console.log('Deleting image from Cloudinary:', public_id);
+    const result = await cloudinary.uploader.destroy(public_id);
+    return res.json({ success: true, result });
+  } catch (error) {
+    console.error('Error deleting image from Cloudinary:', error);
+    return res.status(500).json({ error: 'Failed to delete image from Cloudinary' });
+  }
+};
+
 
